@@ -1,17 +1,32 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using WebApplication1Test.DB;
 using WebApplication1Test.Models.EntityFramework;
+using WebApplication1Test.Repository;
 // Replace with the namespace where ProductService is defined
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-var serverVersion = new MySqlServerVersion(new Version(8, 3, 0));//please make sure the version is he same as scaffold-DbContext command
+
+//Add DbContext please make sure the version is he same as scaffold-DbContext command
+var serverVersion = new MySqlServerVersion(new Version(8, 3, 0));
 var connectionString = builder.Configuration.GetConnectionString("mysqldb");
 builder.Services.AddDbContext<NewTestingContext>(options => options.UseMySql(connectionString, serverVersion));
+//register ApplicationDbContext
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySql(connectionString, serverVersion));
+
+//Add Identity Framework
+builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+//register repository
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
