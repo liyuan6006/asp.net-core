@@ -1,7 +1,7 @@
 ﻿@model WebApplication1Test.Models.SignUpUserModel
 
 @{
-    Layout = null;
+    Layout = "_RootLayout";
 }
 
 <!DOCTYPE html>
@@ -16,7 +16,7 @@
 <h4>SignUpUserModel</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form asp-action="Signup">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -42,7 +42,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="login">Login</a>
 </div>
 
 @section Scripts {
