@@ -46,7 +46,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySql(
 
 //TO DO: // Add the database developer exception filter only in Development environment
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
 // Identity Framework.
 // TODO: Change this to true once go live.
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
@@ -61,10 +60,17 @@ builder.Services.AddControllersWithViews();
 //register repository
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (!app.Environment.IsProdEnv())
+{
+    //It's important to note that app.UseDeveloperExceptionPage() should only be used in the development environment.
+    app.UseDeveloperExceptionPage();
+    //app.UseMigrationsEndPoint();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
