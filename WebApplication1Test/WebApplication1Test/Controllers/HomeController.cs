@@ -15,6 +15,8 @@ namespace WebApplication1Test.Controllers
 
         public IActionResult Index()
         {
+
+
             return View();
         }
 
