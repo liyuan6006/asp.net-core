@@ -52,11 +52,44 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-
-
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHsts(options =>
+{
+    options.Preload = true;
+    options.IncludeSubDomains = true;
+    options.MaxAge = TimeSpan.FromDays(30);
+});
+builder.Services.AddMemoryCache();
+builder.Services.AddResponseCompression();
+// Add antiforgery services
+builder.Services.AddAntiforgery(options =>
+{
+    // Configure antiforgery options here
+    options.HeaderName = "X-CSRF-TOKEN"; // Customize the header name for token validation
+});
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Password settings.
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+
+    // Lockout settings.
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    // User settings.
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    // Unique usernames are request but not email addresses.
+    options.User.RequireUniqueEmail = true;
+});
+
 //register repository
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
